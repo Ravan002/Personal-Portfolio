@@ -1,7 +1,11 @@
+using DataAccess.Concrete;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+//builder.Services.AddDbContext<ProjectContext>(options=>options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSql")));
 
 var app = builder.Build();
 
