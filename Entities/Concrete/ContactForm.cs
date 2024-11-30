@@ -1,17 +1,21 @@
 ﻿using Entities.Abstract;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Entities.Concrete
 {
+    [Table("contact_form")]
     public class ContactForm : BaseEntity
     {
-        public string Name { get; set; }
-        public string Surname { get; set; }
+        [Column("first_name")]
+        public string FirstName { get; set; }
+
+        [Column("last_name")]
+        public string LastName { get; set; }
+
+        [Column("email")]
         public string Email { get; set; }
+
+        [Column("message")]
         public string Message { get; set; }
     }
 }

@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ProjectContext))]
-    [Migration("20241125194939_Initial")]
+    [Migration("20241129114524_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -39,23 +39,27 @@ namespace DataAccess.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("email");
 
                     b.Property<string>("Message")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("message");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("name");
 
                     b.Property<string>("Surname")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("surname");
 
                     b.HasKey("Id");
 
-                    b.ToTable("ContactForms");
+                    b.ToTable("contact_form");
                 });
 
             modelBuilder.Entity("Entities.Concrete.Project", b =>
@@ -72,11 +76,12 @@ namespace DataAccess.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<string>("Link")
-                        .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("url");
 
                     b.Property<string>("ProjectName")
                         .IsRequired()
@@ -85,7 +90,7 @@ namespace DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Projects");
+                    b.ToTable("project");
                 });
 
             modelBuilder.Entity("Entities.Concrete.ProjectImage", b =>
@@ -102,14 +107,18 @@ namespace DataAccess.Migrations
 
                     b.Property<string>("ImagePath")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("image_path");
 
                     b.Property<int>("ProjectId")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("project_id");
 
                     b.HasKey("Id");
 
-                    b.ToTable("ProjectImages");
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("project_image");
                 });
 
             modelBuilder.Entity("Entities.Concrete.SocialMedia", b =>
@@ -130,13 +139,28 @@ namespace DataAccess.Migrations
                         .HasColumnName("plaform_name");
 
                     b.Property<string>("Url")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("platform_url");
 
                     b.HasKey("Id");
 
-                    b.ToTable("SocialMedias");
+                    b.ToTable("social_media");
+                });
+
+            modelBuilder.Entity("Entities.Concrete.ProjectImage", b =>
+                {
+                    b.HasOne("Entities.Concrete.Project", "Project")
+                        .WithMany("ProjectImages")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Project");
+                });
+
+            modelBuilder.Entity("Entities.Concrete.Project", b =>
+                {
+                    b.Navigation("ProjectImages");
                 });
 #pragma warning restore 612, 618
         }

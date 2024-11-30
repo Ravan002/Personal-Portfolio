@@ -1,20 +1,22 @@
 ﻿using Entities.Abstract;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Entities.Concrete
 {
+    [Table("project")]
     public class Project : BaseEntity
     {
 
         [Column("project_name")]
         public string ProjectName { get; set; }
+
+        [Column("description")]
         public string Description { get; set; }
-        public string Link { get; set; }
+
+        [Column("url")]
+        public string? Link { get; set; }
+
+        //One - to - many relation
+        public ICollection<ProjectImage>? ProjectImages { get; set; }
     }
 }

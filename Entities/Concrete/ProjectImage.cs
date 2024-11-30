@@ -1,16 +1,20 @@
 ﻿using Entities.Abstract;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Entities.Concrete
 {
+    [Table("project_image")]
     public class ProjectImage : BaseEntity
     {
-        public int ProjectId {  get; set; }
+        [Column("project_id")]
+        public int ProjectId { get; set; }
+
+
+        [Column("image_path")]
         public string ImagePath { get; set; }
+
+
+        [ForeignKey(nameof(ProjectId))]
+        public Project Project { get; set; }
     }
 }
