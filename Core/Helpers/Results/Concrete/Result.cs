@@ -1,0 +1,18 @@
+﻿using Core.Helpers.Results.Abstract;
+
+namespace Core.Helpers.Results.Concrete
+{
+    public class Result : IResult
+    {
+        public Result(string message, bool success) : this(success)
+        {
+            Message = message;
+        }
+        public Result(bool success)
+        {
+            Success = success;
+        }
+        public bool Success { get; }
+        public string Message { get; }
+    }
+}

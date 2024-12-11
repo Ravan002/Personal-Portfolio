@@ -11,5 +11,8 @@ namespace Entities.Concrete
 
         [Column("image_url")]
         public string ImageUrl { get; set; }
+
+        [Column("skill_platform_url")]
+        public string SkillPlatformUrl { get; set; } = "#";
     }
 }

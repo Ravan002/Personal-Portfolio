@@ -21,5 +21,7 @@ namespace Entities.Concrete
 
         [Column("entered_time")]
         public string EnteredTime { get; set; }
+
+        // FinishTime optional
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Entities.Abstract;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Entities.Concrete
@@ -17,6 +18,6 @@ namespace Entities.Concrete
         public string? Link { get; set; }
 
         //One - to - many relation
-        public ICollection<ProjectImage>? ProjectImages { get; set; }
+        public ICollection<ProjectImage> ProjectImages { get; set; } = new List<ProjectImage>();
     }
 }

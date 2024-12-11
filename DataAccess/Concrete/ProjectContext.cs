@@ -1,4 +1,5 @@
-﻿using Entities.Concrete;
+﻿using Entities.Abstract;
+using Entities.Concrete;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Concrete
@@ -10,6 +11,20 @@ namespace DataAccess.Concrete
             optionsBuilder.UseNpgsql("Server=localhost;Port=5432;Database=portfolio;User Id=postgres;Password=admin");
         }
 
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+
+            var datas= ChangeTracker.Entries<BaseEntity>();
+            foreach (var entity in datas)
+            {
+                if (entity.State == EntityState.Modified)
+                {
+                    entity.Entity.UpdatedAt = DateTime.UtcNow;
+                }
+            }
+
+            return await base.SaveChangesAsync(cancellationToken);
+        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

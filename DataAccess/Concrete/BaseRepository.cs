@@ -5,11 +5,10 @@ using System.Linq.Expressions;
 
 namespace DataAccess.Concrete
 {
-    public class BaseRepository<TEntity, TDbContext>(TDbContext context) : IBaseRepository<TEntity>
+    public class BaseRepository<TEntity>(ProjectContext context) : IBaseRepository<TEntity>
         where TEntity : BaseEntity, new()
-        where TDbContext : DbContext, new()
     {
-        private readonly TDbContext _context = context;
+        private readonly ProjectContext _context = context;
 
         public async Task<int> AddAsync(TEntity entity)
         {
@@ -18,9 +17,8 @@ namespace DataAccess.Concrete
             return await _context.SaveChangesAsync();
         }
 
-        public async Task<int> Delete(TEntity entity)
+        public async Task<int> DeleteAsync(TEntity entity)
         {
-
             _context.Remove(entity);
             return await _context.SaveChangesAsync();
         }
@@ -37,7 +35,7 @@ namespace DataAccess.Concrete
                 : await _context.Set<TEntity>().ToListAsync();
         }
 
-        public async Task<int> Update(TEntity entity)
+        public async Task<int> UpdateAsync(TEntity entity)
         {
             _context.Update(entity);
             return await _context.SaveChangesAsync();
