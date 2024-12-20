@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ProjectContext))]
-    [Migration("20241208113155_Initial")]
-    partial class Initial
+    [Migration("20241218135305_MakeNullRole")]
+    partial class MakeNullRole
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -65,6 +65,86 @@ namespace DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("about_me");
+                });
+
+            modelBuilder.Entity("Entities.Concrete.Auth.RoleClaim", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("role_name");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("roleclaim");
+                });
+
+            modelBuilder.Entity("Entities.Concrete.Auth.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("email");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("first_name");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("last_name");
+
+                    b.Property<byte[]>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("bytea")
+                        .HasColumnName("password_hash");
+
+                    b.Property<byte[]>("PasswordSalt")
+                        .IsRequired()
+                        .HasColumnType("bytea")
+                        .HasColumnName("password_salt");
+
+                    b.Property<int?>("RoleClaimId")
+                        .HasColumnType("integer")
+                        .HasColumnName("roleclaim_id");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleClaimId");
+
+                    b.ToTable("user");
                 });
 
             modelBuilder.Entity("Entities.Concrete.ContactForm", b =>
@@ -298,6 +378,15 @@ namespace DataAccess.Migrations
                     b.ToTable("social_media");
                 });
 
+            modelBuilder.Entity("Entities.Concrete.Auth.User", b =>
+                {
+                    b.HasOne("Entities.Concrete.Auth.RoleClaim", "RoleClaim")
+                        .WithMany("Users")
+                        .HasForeignKey("RoleClaimId");
+
+                    b.Navigation("RoleClaim");
+                });
+
             modelBuilder.Entity("Entities.Concrete.ProjectImage", b =>
                 {
                     b.HasOne("Entities.Concrete.Project", "Project")
@@ -307,6 +396,11 @@ namespace DataAccess.Migrations
                         .IsRequired();
 
                     b.Navigation("Project");
+                });
+
+            modelBuilder.Entity("Entities.Concrete.Auth.RoleClaim", b =>
+                {
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("Entities.Concrete.Project", b =>

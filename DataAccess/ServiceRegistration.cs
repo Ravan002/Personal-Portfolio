@@ -9,7 +9,10 @@ namespace DataAccess
     {
         public static void AddDataAccessService(this IServiceCollection service)
         {
+            // DB Context
             service.AddDbContext<ProjectContext>();
+
+            // Common
             service.AddScoped<IAboutMeDal, EfAboutMeDal>();
             service.AddScoped<IContactFormDal, EfContactFormDal>();
             service.AddScoped<IExperienceDal, EfExperienceDal>();
@@ -17,6 +20,9 @@ namespace DataAccess
             service.AddScoped<IProjectImageDal, EfProjectImageDal>();
             service.AddScoped<ISkillDal, EfSkillDal>();
             service.AddScoped<ISocialMediaDal, EfSocialMediaDal>();
+
+            // Auth 
+            service.AddScoped<IUserDal, EfUserDal>();
         }
     }
 }

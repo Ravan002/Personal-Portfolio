@@ -3,6 +3,7 @@ using System;
 using DataAccess.Concrete;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ProjectContext))]
-    partial class ProjectContextModelSnapshot : ModelSnapshot
+    [Migration("20241218133730_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -109,7 +112,7 @@ namespace DataAccess.Migrations
                         .HasColumnType("text")
                         .HasColumnName("email");
 
-                    b.Property<string>("FirstName")
+                    b.Property<string>("FirtName")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("first_name");
@@ -129,16 +132,7 @@ namespace DataAccess.Migrations
                         .HasColumnType("bytea")
                         .HasColumnName("password_salt");
 
-                    b.Property<string>("RefreshToken")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("refresh_token");
-
-                    b.Property<DateTime>("RefreshTokenExpireTime")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("refresh_token_expire");
-
-                    b.Property<int?>("RoleClaimId")
+                    b.Property<int>("RoleClaimId")
                         .HasColumnType("integer")
                         .HasColumnName("roleclaim_id");
 
@@ -388,7 +382,9 @@ namespace DataAccess.Migrations
                 {
                     b.HasOne("Entities.Concrete.Auth.RoleClaim", "RoleClaim")
                         .WithMany("Users")
-                        .HasForeignKey("RoleClaimId");
+                        .HasForeignKey("RoleClaimId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("RoleClaim");
                 });

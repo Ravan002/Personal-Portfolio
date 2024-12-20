@@ -85,6 +85,21 @@ namespace DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "roleclaim",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    role_name = table.Column<string>(type: "text", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_roleclaim", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "skill",
                 columns: table => new
                 {
@@ -140,10 +155,41 @@ namespace DataAccess.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "user",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    first_name = table.Column<string>(type: "text", nullable: false),
+                    last_name = table.Column<string>(type: "text", nullable: false),
+                    email = table.Column<string>(type: "text", nullable: false),
+                    password_hash = table.Column<byte[]>(type: "bytea", nullable: false),
+                    password_salt = table.Column<byte[]>(type: "bytea", nullable: false),
+                    roleclaim_id = table.Column<int>(type: "integer", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_user", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_user_roleclaim_roleclaim_id",
+                        column: x => x.roleclaim_id,
+                        principalTable: "roleclaim",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_project_image_project_id",
                 table: "project_image",
                 column: "project_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_user_roleclaim_id",
+                table: "user",
+                column: "roleclaim_id");
         }
 
         /// <inheritdoc />
@@ -168,7 +214,13 @@ namespace DataAccess.Migrations
                 name: "social_media");
 
             migrationBuilder.DropTable(
+                name: "user");
+
+            migrationBuilder.DropTable(
                 name: "project");
+
+            migrationBuilder.DropTable(
+                name: "roleclaim");
         }
     }
 }

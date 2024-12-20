@@ -1,5 +1,6 @@
 ﻿using Entities.Abstract;
 using Entities.Concrete;
+using Entities.Concrete.Auth;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Concrete
@@ -14,7 +15,7 @@ namespace DataAccess.Concrete
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
 
-            var datas= ChangeTracker.Entries<BaseEntity>();
+            var datas = ChangeTracker.Entries<BaseEntity>();
             foreach (var entity in datas)
             {
                 if (entity.State == EntityState.Modified)
@@ -27,14 +28,22 @@ namespace DataAccess.Concrete
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<RoleClaim>()
+                .HasMany(rc => rc.Users)
+                .WithOne(u => u.RoleClaim)
+                .HasForeignKey(u => u.RoleClaimId);
 
             modelBuilder.Entity<Project>()
                 .HasMany(p => p.ProjectImages)
                 .WithOne(pi => pi.Project)
                 .HasForeignKey(pi => pi.ProjectId);
+
+
+            base.OnModelCreating(modelBuilder);
         }
 
+        // Common
         public DbSet<AboutMe> AboutMes { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<ContactForm> ContactForms { get; set; }
@@ -42,6 +51,10 @@ namespace DataAccess.Concrete
         public DbSet<SocialMedia> SocialMedias { get; set; }
         public DbSet<Experience> Experiences { get; set; }
         public DbSet<Skill> Skills { get; set; }
+
+        // Auth
+        public DbSet<User> Users { get; set; }
+        public DbSet<RoleClaim> RoleClaims { get; set; }
 
     }
 }
