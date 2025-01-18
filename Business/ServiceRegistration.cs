@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using Business.Concrete;
+using Business.Storage.Local;
 using Core.Helpers.Security.JWT;
 using Core.Storage.Azure;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,6 +27,7 @@ namespace Business
 
             // Additional
             service.AddScoped<IAzureStorage, AzureStorage>();
+            service.AddScoped<ILocalStorage, LocalStorage>();
             service.AddScoped<ITokenHelper, JwtHelper>();
         }
     }

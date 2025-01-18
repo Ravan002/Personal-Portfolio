@@ -19,7 +19,7 @@ namespace Core.Helpers.Security.JWT
         }
         public string CreateAccessToken(User user)
         {
-            var expire = DateTime.UtcNow.AddSeconds(_tokenParams.AccessTokenLifeTime);
+            var expire = DateTime.UtcNow.AddMinutes(_tokenParams.AccessTokenLifeTime);
 
             SecurityKey secretKey = SecurityKeyHelper.CreateSecurityKey(_tokenParams.SecretKey);
 
@@ -45,7 +45,7 @@ namespace Core.Helpers.Security.JWT
             var randomNumber = new byte[32];
             using var rng = RandomNumberGenerator.Create();
             rng.GetBytes(randomNumber);
-            return (Convert.ToBase64String(randomNumber), DateTime.UtcNow.AddSeconds(_tokenParams.RefreshTokenLifeTime));
+            return (Convert.ToBase64String(randomNumber), DateTime.UtcNow.AddMinutes(_tokenParams.RefreshTokenLifeTime));
         }
 
         private IEnumerable<Claim> SetClaims(User user)
@@ -61,23 +61,29 @@ namespace Core.Helpers.Security.JWT
             }
             return claims;
         }
+
+
+        public IEnumerable<Claim> GetClaimPrincipalsFromAccessToken(string accessToken)
+        {
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateAudience = true,
+                ValidAudience = _tokenParams.Audience,
+
+                ValidateIssuer = true,
+                ValidIssuer = _tokenParams.Issuer,
+
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = SecurityKeyHelper.CreateSecurityKey(_tokenParams.SecretKey),
+
+                //ValidateLifetime = true,
+                //ClockSkew = TimeSpan.Zero
+            };
+
+            var tokenHadler = new JwtSecurityTokenHandler();
+            var principal = tokenHadler.ValidateToken(accessToken, tokenValidationParameters, out _);
+
+            return principal.Claims;
+        }
     }
 }
-
-
-//var claims = new List<Claim>
-//    {
-//        new(ClaimTypes.Name, "ravan"),
-//        new(ClaimTypes.Email,"mammedov.r39@gmail.com")
-//    };
-
-
-//SymmetricSecurityKey secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("secretKey.secretKey.secretKey.secretKey.secretKey.secretKey.secretKey.secretKey.secretKey.secretKey.secretKey.secretKey.secretKey."));
-//SigningCredentials signInCredentials = new SigningCredentials(secretKey, algorithm: SecurityAlgorithms.HmacSha256);
-
-//var expirationDate = DateTime.Now.AddSeconds(60);
-//SecurityToken jwt = new JwtSecurityToken(issuer: "portfolio-back", audience: "portfolio-front", claims: claims, notBefore: DateTime.Now, expires: expirationDate, signingCredentials: signInCredentials);
-//SecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
-
-//var token = tokenHandler.WriteToken(jwt);
-//Console.WriteLine(token);

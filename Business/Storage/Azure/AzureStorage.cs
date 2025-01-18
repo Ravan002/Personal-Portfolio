@@ -15,7 +15,7 @@ namespace Core.Storage.Azure
             _client = new BlobServiceClient(AppConstants.AzureConnectionString);
         }
 
-        public async Task<string> AddImageWithProjectNameAsync(string containerName, string projectName, IFormFile file)
+        public async Task<string> AddProjectImageAsync(string containerName, string projectName, IFormFile file)
         {
             var container = _client.GetBlobContainerClient(containerName);
             var blobUploadOptions = new BlobUploadOptions

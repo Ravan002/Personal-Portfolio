@@ -12,7 +12,6 @@ namespace PortfolioAPI.Controllers
         private readonly IAboutMeService _aboutMeService = aboutMeService;
 
         [Authorize]
-
         [HttpPost("Add About Me")]
         public async Task<IActionResult> AddAboutMe(AboutMeDto dto)
         {

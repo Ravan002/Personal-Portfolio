@@ -5,6 +5,7 @@ using Core.Helpers.Security.Hashing;
 using Core.Helpers.Security.JWT;
 using Entities.Concrete.Auth;
 using Entities.Dtos.Auth;
+using System.Security.Claims;
 
 namespace Business.Concrete
 {
@@ -73,8 +74,31 @@ namespace Business.Concrete
                 RefreshTokenExpireTime = expireTime
             };
             user.RefreshToken = tokenResponse.RefreshToken;
-            user.RefreshTokenExpireTime=expireTime;
+            user.RefreshTokenExpireTime = expireTime;
             return tokenResponse;
         }
+
+        public async Task<IDataResult<TokenResponse>> RefreshAccessToken(TokenResponse tokenRequest)
+        {
+            var user = await GetUserByEmailFromExpireToken(tokenRequest.AccessToken);
+
+            if (user!=null && user.RefreshToken == tokenRequest.RefreshToken && user.RefreshTokenExpireTime >= DateTime.UtcNow)
+            {
+                var tokenResponse = CreateTokens(user);
+                await _userService.UpdateUser(user);
+                return new SuccesDataResult<TokenResponse>(tokenResponse,"Success");
+            }
+            return new ErrorDataResult<TokenResponse>("Error");
+        }
+
+        public async Task<User?> GetUserByEmailFromExpireToken(string accessToken)
+        {
+            var claims = _tokenHelper.GetClaimPrincipalsFromAccessToken(accessToken);
+            var email = claims.SingleOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+
+            var user = email != null ? await _userService.GetUserByEmail(email) : null;
+            return user.Data;
+        }
     }
+
 }

@@ -7,17 +7,9 @@ namespace PortfolioAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController(ITokenHelper tokenHelper, IAuthService authService) : ControllerBase
+    public class AuthController(IAuthService authService) : ControllerBase
     {
-        private readonly ITokenHelper _tokenHelper = tokenHelper;
         private readonly IAuthService _authService = authService;
-
-        //[HttpGet("CreateToken")]
-        //public IActionResult CreateAccessToken()
-        //{
-        //    var result=_tokenHelper.CreateToken();
-        //    return Ok(result);
-        //}
 
         [HttpPost("Register")]
         public async Task<IActionResult> Register(RegisterDto dto)
@@ -31,6 +23,13 @@ namespace PortfolioAPI.Controllers
         {
             var result = await _authService.Login(dto);
             return result.Success ? Ok(result) : BadRequest(result);
+        }
+
+        [HttpPost("RefreshAccessToken")]
+        public async Task<IActionResult> Refresh(TokenResponse tokenResponse)
+        {
+            var result = await _authService.RefreshAccessToken(tokenResponse);
+            return result.Success ?  Ok(result) : BadRequest("Move to login page");
         }
 
     }
